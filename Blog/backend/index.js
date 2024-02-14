@@ -54,7 +54,7 @@ app.post("/api/upload",upload.single("file"),(req,res)=>{
 })
 
 
-app.listen(process.env.PORT,()=>{
+app.listen(5000,()=>{
     connectDB()
-    console.log("app is running on port "+process.env.PORT)
+    console.log("app is running on port "+ 5000)
 })
