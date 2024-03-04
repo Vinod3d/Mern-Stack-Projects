@@ -50,6 +50,8 @@ const signin = async (req, res) => {
     const tokenUser = createTokenUser(user);
     attachCookiesToResponse({ res, tokenUser });
 
+    delete tokenUser.password;
+    
     res.status(StatusCodes.OK).json({ success: true, user: tokenUser });
   } catch (error) {
     // Handle errors gracefully
