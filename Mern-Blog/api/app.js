@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const cookieParser = require('cookie-parser')
+var cors = require('cors')
 
 // database
 const connectDB = require('./db/connect');
@@ -23,6 +24,7 @@ app.get('/', (req, res)=>{
 
 //middleware
 app.use(express.json());
+app.use(cors())
 app.use(cookieParser(process.env.JWT_SECRET));
 
 app.use('/api/v1/auth', authRouter);
