@@ -54,11 +54,34 @@ const signin = async (req, res) => {
     
     res.status(StatusCodes.OK).json({ success: true, user: tokenUser });
   } catch (error) {
-    // Handle errors gracefully
-    console.error(error); // Log the error for debugging
     res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message || 'Something went wrong' });
   }
 };
+
+const google = async (req, res, next) => {
+  const {email, name, googlePhotoUrl} = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if(user){
+      const tokenUser = createTokenUser({ ...newUser.toObject(), profilePicture: googlePhotoUrl });
+      attachCookiesToResponse({ res, tokenUser });
+      delete tokenUser.password;
+      res.status(StatusCodes.OK).json({ success: true, user: tokenUser });
+    } else{
+      const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8)
+
+      const user = await User.create({ name, email, password : generatedPassword, profilePicture: googlePhotoUrl });
+      delete user.password;
+      res.status(StatusCodes.CREATED).json({ user });
+    }
+  } catch (error) {
+    
+  }
+  
+}
+
+
+
 
 
 const logout = async(req, res) => {
@@ -68,5 +91,5 @@ const logout = async(req, res) => {
 
 
 module.exports =  {
-    signup, signin, logout
+    signup, signin, google, logout
 };
