@@ -11,7 +11,11 @@ const Header = () => {
   const dispatch = useDispatch();
   const {currentUser} = useSelector(state => state.user);
   const {theme} = useSelector((state) => state.theme);
+<<<<<<< HEAD:2-Mern-Blog/client/src/components/Header.jsx
 
+=======
+  console.log(currentUser)
+>>>>>>> fda60c2b1ebe4c4b09985f1dbb96d51fcbac44c0:Mern-Blog/client/src/components/Header.jsx
 
   return (
     <Navbar className='border-b-2'>
