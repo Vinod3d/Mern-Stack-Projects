@@ -7,7 +7,7 @@ const {
   updateBlog,
   getAllBlog, 
   getSingleBlog, 
-  getFeaturedBlog,
+  featuredBlog,
   likedBlog,
   deleteBlog
 } = require('../controllers/blogController');
@@ -18,6 +18,10 @@ router
   .post(authenticateUser, createBlog)
   .get(authenticateUser, getAllBlog);
 
+router
+  .route('/featured')
+  .get(authenticateUser, featuredBlog);
+
 
 router
   .route('/:id')
@@ -25,12 +29,11 @@ router
   .patch(authenticateUser, updateBlog)
   .delete(authenticateUser, deleteBlog);
 
-router
-  .route('/featuredBlog')
-  .get(authenticateUser, getFeaturedBlog);
-
-router
+  
+  router
   .route('/likeBlog/:id')
   .get(authenticateUser, likedBlog);
+  
+
 
   module.exports = router

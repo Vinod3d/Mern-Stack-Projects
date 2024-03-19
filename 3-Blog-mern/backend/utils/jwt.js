@@ -12,7 +12,6 @@ const isTokenValid = ({ token }) => {
   return jwt.verify(token, process.env.JWT_SECRET);
 };
 
-console.log(isTokenValid)
 
 const attachCookiesToResponse =({res, user}) =>{
   const token = createJWT({payload:user});
