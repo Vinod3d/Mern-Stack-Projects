@@ -19,6 +19,9 @@ export default function Header() {
           <Link to='/profile'>
             <li>Sing In</li>
           </Link>
+          <Link to='/sign-up'>
+            <li>Sing Up</li>
+          </Link>
         </ul>
       </div>
     </div>
