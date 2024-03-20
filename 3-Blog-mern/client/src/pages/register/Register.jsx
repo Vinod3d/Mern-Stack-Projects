@@ -2,7 +2,9 @@ import React, { useState } from 'react'
 import classes from './register.module.css'
 import { Link, useNavigate } from 'react-router-dom'
 import { request } from '../../utils/fetchApi';
-
+import axios from 'axios';
+import { URL } from '../../url';
+URL
 const Register = () => {
 
   const [formData, setFormData] = useState({
@@ -22,8 +24,7 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = async(event) => {
-    // console.log(formData)
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!formData.name || !formData.email || !formData.password) {
       return setErrorMessage('Please fill out all fields.');
@@ -31,32 +32,24 @@ const Register = () => {
     try {
       setLoading(true);
       setErrorMessage(null);
-      const res = await request('/api/v1/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-      console.log(res);
-
-      if (res.status === 200) {
-        const data = await res.json();
+      // const options = {'Content-Type': 'application/json'}
+      // const res = await request('/api/v1/auth/register', "POST", options, {...formData});
+      const res=await axios.post(URL+"/api/auth/register", formData)
+      
+      // Adjust response handling based on the structure of the returned data
+      if (res && res.status === 200) { // Check if res exists and status is 200
         setErrorMessage('You Registered Successfully.');
-      } else if (res.status === 400) {
-        const errorData = await res.json();
-        setErrorMessage(errorData.error)
+        navigate('/sign-in');
+      } else if (res && res.status === 400) { // Check if res exists and status is 400
+        setErrorMessage(res.error); // Assuming error message is provided in the response
       } else {
-
+        // Handle other cases if needed
       }
       setLoading(false);
-      if(res.ok){
-        navigate('/sign-in')
-      }
-  
     } catch (error) {
       console.error('Error during form submission:', error);
     }
-  }
-
+  };
 
   return (
     <div className={classes.container}>
