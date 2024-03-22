@@ -24,7 +24,7 @@ const signin = async (req, res, next) => {
         if (!validPassword) return next(errorHandler(401, 'wrong credentials'));
         const token = jwt.sign({id: validUser._id}, process.env.JWT_SECRET);
         const {password: hashedPassword, ...rest} = validUser._doc;
-        res.cookie('access_token', token, {httpOnly: true, expiresIn: process.env.JWT_LIFETIME}).status(200).json({rest})
+        res.cookie('access_token', token, {httpOnly: true, expiresIn: process.env.JWT_LIFETIME}).status(200).json(rest)
     } catch (error) {
         next(error);
     }
@@ -36,7 +36,7 @@ const google = async (req, res, next) => {
         if(user){
             const token = jwt.sign({id: user._id}, process.env.JWT_SECRET)
             const {password: hashedPassword, ...rest} = user._doc;
-            res.cookie('access_token', token, {httpOnly: true, expiresIn: process.env.JWT_LIFETIME}).status(200).json({rest})
+            res.cookie('access_token', token, {httpOnly: true, expiresIn: process.env.JWT_LIFETIME}).status(200).json(rest)
         } else{
             const generatedPassword = Math.random(36).toString(36).slice(-8) +  Math.random().toString(36).slice(-8);
             const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
@@ -54,7 +54,7 @@ const google = async (req, res, next) => {
             res.cookie('access_token', token, {
                 httpOnly: true,
                 expiresIn: process.env.JWT_LIFETIME
-            }).status(200).json({rest})
+            }).status(200).json(rest)
         }
     } catch (error) {
         next(error);
