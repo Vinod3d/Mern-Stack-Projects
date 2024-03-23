@@ -4,12 +4,12 @@ const {
   updateUser,
   deleteUser,
 } = require('../controller/userController.js');
-// import { verifyToken } from '../utils/verifyUser.js';
+const verifyToken = require('../utils/verifyUser.js');
 
 const router = express.Router();
 
 router.get('/', test);
-router.post('/update/:id', updateUser);
+router.post('/update/:id', verifyToken, updateUser);
 router.delete('/delete/:id',  deleteUser);
 
 module.exports = router;

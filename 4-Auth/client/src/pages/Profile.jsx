@@ -9,7 +9,6 @@ const Profile = () => {
   const [imagePercent, setImagePercent] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [formData, setFormData] = useState({});
-  console.log(formData)
   const {currentUser} = useSelector((state) => state.user);
 
   useEffect(()=>{
@@ -52,7 +51,7 @@ const Profile = () => {
           />
 
           <img 
-            src={currentUser.profilePicture} 
+            src={formData.profilePicture || currentUser.profilePicture} 
             alt="profile" 
             className="h-24 w-24 self-center cursor-pointer rounded-full object-cover"
             onClick={()=> fileRef.current.click()}
