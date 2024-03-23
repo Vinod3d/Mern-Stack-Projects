@@ -11,11 +11,6 @@ const _dirname = path.resolve();
 const authRouter = require('./routes/authRoutes');
 const userRouter = require('./routes/userRoutes');
 
-app.get('/', (req, res)=>{
-    res.send('e-commerce api');
-});
-
-
 app.use(express.json());
 app.use(express.static(path.join(_dirname + '/client/dist')));
 app.get('*', (req, res)=>{
