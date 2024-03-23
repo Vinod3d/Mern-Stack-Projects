@@ -3,6 +3,9 @@ const express = require('express');
 const connectDB = require('./db/connectDB');
 const app = express();
 const cookieParser = require('cookie-parser');
+const path = require( 'path' );
+
+const _dirname = path.resolve();
 
 //  routers
 const authRouter = require('./routes/authRoutes');
@@ -13,7 +16,11 @@ app.get('/', (req, res)=>{
 });
 
 
-app.use(express.json()); // middleware for parsing json
+app.use(express.json());
+app.use(express.static(path.join(_dirname + '/client/dist')));
+app.get('*', (req, res)=>{
+  res.sendFile(path.join(__dirname, 'client','dist','index.html'));
+})
 app.use(cookieParser());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/user', userRouter);
