@@ -62,7 +62,7 @@ const google = async (req, res, next) => {
 };
 
 const signout = (req, res) => {
-    res.send("signout User")
+   res.clearCookie('access_token').status(200).json('Signout success!');
 };
 
 
