@@ -1,8 +1,8 @@
 const User = require('../modals/User');
 
 const getAllUsers = async (req, res)=>{
-    // res.send("get all users");
-    req.json(req.body)
+    res.send("get all users");
+    // req.json(req.body)
 }
 
 const getSingleUser = async (req, res)=>{

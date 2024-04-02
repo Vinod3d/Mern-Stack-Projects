@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import OAuth from '../components/OAuth';
 
-  const SignUp = () => {
+const SignUp = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -21,7 +21,7 @@ import OAuth from '../components/OAuth';
     }));
   };
 
-  const handleSubmit = async(event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!formData.name || !formData.email || !formData.password) {
       return setErrorMessage('Please fill out all fields.');
@@ -44,10 +44,10 @@ import OAuth from '../components/OAuth';
 
       }
       setLoading(false);
-      if(res.ok){
+      if (res.ok) {
         navigate('/sign-in')
       }
-  
+
     } catch (error) {
       console.error('Error during form submission:', error);
     }
@@ -76,29 +76,29 @@ import OAuth from '../components/OAuth';
         {/* right */}
         <div className="flex-1">
           <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
-              <div className="">
-                <Label value='Your Username'/>
-                <TextInput type='text' placeholder='Username' id='username' name='name' onChange={handleChange}/>
-              </div>
-              <div className="">
-                <Label value='Your Email'/>
-                <TextInput type='text' placeholder='name@company.com' id='email' name='email' onChange={handleChange}/>
-              </div>
-              <div className="">
-                <Label value='Your Password'/>
-                <TextInput type='text' placeholder='Password' id='password' name='password' onChange={handleChange}/>
-              </div>
-              <Button gradientDuoTone='purpleToPink' type='submit' disabled={loading}>
-                {
-                  loading ? (
-                    <> 
-                      <Spinner size='md'/>
-                      <span className='pl-3'>Loading...</span>
-                    </>
-                  ) : 'Sign Up'
-                }
-              </Button>
-              <OAuth/>
+            <div className="">
+              <Label value='Your Username' />
+              <TextInput type='text' placeholder='Username' id='username' name='name' onChange={handleChange} />
+            </div>
+            <div className="">
+              <Label value='Your Email' />
+              <TextInput type='text' placeholder='name@company.com' id='email' name='email' onChange={handleChange} />
+            </div>
+            <div className="">
+              <Label value='Your Password' />
+              <TextInput type='text' placeholder='Password' id='password' name='password' onChange={handleChange} />
+            </div>
+            <Button gradientDuoTone='purpleToPink' type='submit' disabled={loading}>
+              {
+                loading ? (
+                  <>
+                    <Spinner size='md' />
+                    <span className='pl-3'>Loading...</span>
+                  </>
+                ) : 'Sign Up'
+              }
+            </Button>
+            <OAuth />
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Have an account?</span>

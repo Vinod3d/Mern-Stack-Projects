@@ -18,9 +18,7 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 
 
 
-app.get('/', (req, res)=>{
-    res.send('e-commerce api');
-});
+
 
 //middleware
 app.use(express.json());

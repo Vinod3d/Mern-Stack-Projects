@@ -1,27 +1,23 @@
 const User = require('../modals/User');
 const CustomError = require('../errors');
 const { StatusCodes } = require('http-status-codes');
-const { createTokenUser, attachCookiesToResponse } = require('../utils');
 const jwt  = require("jsonwebtoken");
+const bcrypt = require('bcryptjs');
 
 
 
-const signup = async (req, res) => {
+const signup = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
     const emailAlreadyExists = await User.findOne({ email });
-
     if (emailAlreadyExists) {
       throw new CustomError.BadRequestError('Email already exists');
     }
-    
-    const user = await User.create({ name, email, password });
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const user = await User.create({ name, email, password : hashedPassword });
     res.status(StatusCodes.CREATED).json({ user });
   } catch (error) {
-    // Handle the error here
-    res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({
-      error: error.message || 'Something went wrong, try again later',
-    });
+    next(error);
   }
 };
 

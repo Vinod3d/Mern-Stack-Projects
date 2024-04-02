@@ -11,11 +11,6 @@ const Header = () => {
   const dispatch = useDispatch();
   const {currentUser} = useSelector(state => state.user);
   const {theme} = useSelector((state) => state.theme);
-<<<<<<< HEAD:2-Mern-Blog/client/src/components/Header.jsx
-
-=======
-  console.log(currentUser)
->>>>>>> fda60c2b1ebe4c4b09985f1dbb96d51fcbac44c0:Mern-Blog/client/src/components/Header.jsx
 
   return (
     <Navbar className='border-b-2'>
@@ -43,12 +38,15 @@ const Header = () => {
           arrowIcon={false}
           inline
           label={
-            <Avatar alt='user' img={currentUser.user.profilePicture} rounded />
+            <Avatar 
+            alt='user' 
+            // img={currentUser.user.profilePicture} 
+            rounded />
           }
           >
             <Dropdown.Header>
-              <span className='block text-sm'>{currentUser.user.name}</span>
-              <span className='block text-sm font-medium truncate'>{currentUser.user.email}</span>
+              {/* <span className='block text-sm'>{currentUser.user.name}</span> */}
+              {/* <span className='block text-sm font-medium truncate'>{currentUser.user.email}</span> */}
             </Dropdown.Header>
             <Link to={'/dashboard?tab=profile'}>
               <Dropdown.Item>Profile</Dropdown.Item>
@@ -65,7 +63,7 @@ const Header = () => {
         )}
         <Navbar.Toggle/>
       </div>
-        <Navbar.Collapse>
+      <Navbar.Collapse>
           <Navbar.Link active={path === "/"} as={'div'}>
             <Link  to='/'>Home</Link>
           </Navbar.Link>
@@ -75,7 +73,7 @@ const Header = () => {
           <Navbar.Link active={path === "/projects"} as={'div'}>
             <Link  to='/projects'>Projects</Link>
           </Navbar.Link>
-        </Navbar.Collapse>
+      </Navbar.Collapse>
     </Navbar>
   )
 }
