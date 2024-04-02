@@ -23,33 +23,34 @@ const signup = async (req, res, next) => {
 
 
 
-const signin = async (req, res) => {
+const signin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
       throw new CustomError.BadRequestError('Please provide email and password');
     }
-
-    // Validate email format here if necessary
-
     const user = await User.findOne({ email });
 
     if (!user) {
       throw new CustomError.UnauthenticatedError('Invalid email or password');
     }
 
-    const isPasswordCorrect = await user.comparePassword(password);
-    if (!isPasswordCorrect) {
+    const validPassword = bcrypt.compareSync(password, user.password);
+    if (!validPassword) {
       throw new CustomError.UnauthenticatedError('Invalid email or password');
     }
 
-    const tokenUser = createTokenUser(user);
-    attachCookiesToResponse({ res, tokenUser });
-
-    delete tokenUser.password;
+    const token = jwt.sign(
+      { id: user._id }, process.env.JWT_SECRET, { expiresIn: '3d' }
+    )
     
-    res.status(StatusCodes.OK).json({ success: true, user: tokenUser });
+    const {password: pass, ...rest} = user._doc;
+
+    res.status(StatusCodes.OK).cookie('access_token', token, {
+      httpOnly: true
+    }).json(rest);
+
   } catch (error) {
     res.status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR).json({ success: false, message: error.message || 'Something went wrong' });
   }

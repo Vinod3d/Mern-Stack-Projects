@@ -82,11 +82,11 @@ const SignUp = () => {
             </div>
             <div className="">
               <Label value='Your Email' />
-              <TextInput type='text' placeholder='name@company.com' id='email' name='email' onChange={handleChange} />
+              <TextInput type='email' placeholder='name@company.com' id='email' name='email' onChange={handleChange} />
             </div>
             <div className="">
               <Label value='Your Password' />
-              <TextInput type='text' placeholder='Password' id='password' name='password' onChange={handleChange} />
+              <TextInput type='password' placeholder='Password' id='password' name='password' onChange={handleChange} />
             </div>
             <Button gradientDuoTone='purpleToPink' type='submit' disabled={loading}>
               {
