@@ -61,16 +61,22 @@ const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if(user){
-      const tokenUser = createTokenUser({ ...newUser.toObject(), profilePicture: googlePhotoUrl });
-      attachCookiesToResponse({ res, tokenUser });
-      delete tokenUser.password;
-      res.status(StatusCodes.OK).json({ success: true, user: tokenUser });
+      const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn:'3d'});
+      const {password, ...rest} = user._doc;
+      res.status(StatusCodes.OK).cookie('access_token', token,  {httpOnly:true}).json(rest);
     } else{
       const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8)
-
-      const user = await User.create({ name, email, password : generatedPassword, profilePicture: googlePhotoUrl });
-      delete user.password;
-      res.status(StatusCodes.CREATED).json({ user });
+      const hashedPassword = bcrypt.hashSync(generatedPassword, 10);
+      const newUser = new User({
+        name: name.toLowerCase().split(' ').join('') + Math.random().toString(9).slice(-4),
+        email,
+        password: hashedPassword,
+        profilePicture: googlePhotoUrl,
+      });
+      await newUser.save();
+      const token = jwt.sign({id: newUser._id}, process.env.JWT_SECRET, {expiresIn: "3d"});
+      const {password, ...rest} = newUser._doc;
+      res.status(StatusCodes.OK).cookie('access_token', token,  {httpOnly:true}).json(rest);
     }
   } catch (error) {
     next(error);

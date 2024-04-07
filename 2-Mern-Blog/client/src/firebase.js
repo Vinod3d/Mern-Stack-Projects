@@ -10,9 +10,8 @@ const firebaseConfig = {
   projectId: "mern-blog-dcebe",
   storageBucket: "mern-blog-dcebe.appspot.com",
   messagingSenderId: "611236306419",
-  appId: "1:611236306419:web:06ce6e8b77c07b9a5f4686"
+  appId: "1:611236306419:web:4cb0f76eb74370915f4686"
 };
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-
