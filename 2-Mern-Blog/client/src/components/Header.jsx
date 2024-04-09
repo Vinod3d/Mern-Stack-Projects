@@ -34,19 +34,19 @@ const Header = () => {
           {theme === 'light' ? <FaSun/> : <FaMoon/>}
         </Button>
         {currentUser ? (
-          <Dropdown 
+          <Dropdown    
           arrowIcon={false}
           inline
           label={
             <Avatar 
             alt='user' 
-            // img={currentUser.user.profilePicture} 
+            img={currentUser.profilePicture} 
             rounded />
           }
           >
             <Dropdown.Header>
-              {/* <span className='block text-sm'>{currentUser.user.name}</span> */}
-              {/* <span className='block text-sm font-medium truncate'>{currentUser.user.email}</span> */}
+              <span className='block text-sm'>{currentUser.name}</span>
+              <span className='block text-sm font-medium truncate'>{currentUser.email}</span>
             </Dropdown.Header>
             <Link to={'/dashboard?tab=profile'}>
               <Dropdown.Item>Profile</Dropdown.Item>
