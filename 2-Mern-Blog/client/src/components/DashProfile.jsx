@@ -14,6 +14,7 @@ const DashProfile = () => {
     const [imageFileUploadError, setImageFileUploadError] = useState(null);
     const filePickerRef = useRef();
     console.log(imageFileUploadError, imageFileUploadProgress);
+    console.log(currentUser.profilePicture)
 
     const handleImageChange = (e)=>{
         const file = e.target.files[0];
@@ -77,6 +78,9 @@ const DashProfile = () => {
                                 position: 'absolute',
                                 top: 0,
                                 left: 0,
+                                bottom: 0,
+                                right: 0,
+                                opacity: imageFileUploadProgress === 100 ? 0 : 1,
                             },
                             path : {
                                 stroke : `rgba(62, 152, 199, ${imageFileUploadProgress / 100})`,
@@ -85,6 +89,7 @@ const DashProfile = () => {
                         
                         />
                     )}
+                    
                     <img src={imageFileUrl || currentUser.profilePicture} alt="user"
                         className={`rounded-full w-full h-full object-cover border-8 border-[lightgray]
                         ${imageFileUploadProgress && imageFileUploadProgress < 100 && 'opacity-60'}

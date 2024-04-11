@@ -1,8 +1,10 @@
 const User = require('../modals/User');
+const CustomError = require('../errors');
+const { StatusCodes } = require('http-status-codes');
+const bcryptjs = require('bcryptjs');
 
 const getAllUsers = async (req, res)=>{
     res.send("get all users");
-    // req.json(req.body)
 }
 
 const getSingleUser = async (req, res)=>{
@@ -13,15 +15,55 @@ const showCurrentUser = async (req, res)=>{
 
 };
 
-const updateUser = async (req, res)=>{
+const updateUser = async (req, res, next)=>{
+    const { userId } = req.params;
+    const { name, email, profilePicture, password } = req.body;
 
+    if (req.user.id !== userId) {
+        return next(new CustomError.UnauthenticatedError('You are not allowed to update this user'));
+    }
+
+    if (password) {
+        if (password.length < 6) {
+            return next(new CustomError.BadRequestError('Password must be at least 6 characters long'));
+        }
+
+        req.body.password = bcryptjs.hashSync(password, 10);
+    };
+      
+    if (name) {
+        if (name.length < 7 || name.length > 20) {
+            return next(new CustomError.BadRequestError('User Must be between 7 and 20 characters'));
+        }
+        if (name.includes(' ')) {
+            return next(new CustomError.BadRequestError('name cannot contain spaces'));
+        }
+        if (name !== name.toLowerCase()) {
+            return next(new CustomError.BadRequestError('name must be lowercase'));
+        }
+        if (!name.match(/^[a-zA-Z0-9]+$/)) {
+            return next(new CustomError.BadRequestError('name can only contain letters and numbers'));
+        }
+    };
+
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+          userId,
+          { name, email, profilePicture, password: req.body.password },
+          { new: true }
+        );
+
+        const { password: _, ...rest } = updatedUser._doc;
+
+        res.status(200).json(rest);
+    } catch (error) {
+        next(error);
+    }
 }
 
 const updateUserPassword = async (req, res)=>{
 
 }
-
-
 
 module.exports = {
     getAllUsers,
@@ -30,22 +72,3 @@ module.exports = {
     updateUser,
     updateUserPassword
 }
-
-
-
-
-// const updateUser = async (req, res)=>{
-//     const {email, name} = req.body;
-//     if(!email || !name){
-//         throw new CustomError.BadRequestError('Please provide all values');
-//     }
-
-//     const user = await User.findOneAndUpdate(
-//         {_id: req.user.userId},
-//         {email, name},
-//         {new: true, runValidators : true}
-//     );
-//     const tokenUser = createTokenUser(user);
-//     attachCookiesToResponse({res, user:tokenUser});
-//     res.status(StatusCodes.OK).json({ user: tokenUser });
-// }

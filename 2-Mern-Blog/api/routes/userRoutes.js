@@ -1,15 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const verifyToken = require('../utils/verifyUser');
 
 const {
   getAllUsers,
-  // getSingleUser,
-  // showCurrentUser,
-  // updateUser,
-  // updateUserPassword,
+  updateUser,
 } = require('../controllers/userController');
 
-router.route('/').get(getAllUsers);
+router.get('/', getAllUsers);
+router.put('/update/:userId', verifyToken, updateUser);
 
 
 module.exports = router;
