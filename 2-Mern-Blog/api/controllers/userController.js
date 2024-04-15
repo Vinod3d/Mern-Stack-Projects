@@ -32,7 +32,7 @@ const updateUser = async (req, res, next)=>{
     };
       
     if (name) {
-        if (name.length < 7 || name.length > 20) {
+        if (name.length < 3 || name.length > 20) {
             return next(new CustomError.BadRequestError('User Must be between 7 and 20 characters'));
         }
         if (name.includes(' ')) {
