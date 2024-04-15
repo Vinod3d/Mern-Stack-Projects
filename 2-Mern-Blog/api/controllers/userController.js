@@ -61,8 +61,26 @@ const updateUser = async (req, res, next)=>{
     }
 }
 
-const updateUserPassword = async (req, res)=>{
 
+const deleteUser = async (req, res, next) => {
+    if(req.user.id !== req.params.userId){
+        return  next(new CustomError.ForbiddenError("You don't have permission to delete this"));
+    }
+
+    try {
+        await User.findByIdAndDelete(req.params.userId);
+        res.status(StatusCodes.OK).json('User has been deleted');
+    } catch (error) {
+        next(error);
+    }
+}
+
+const signOut = async(req, res, next) => {
+    try {
+        res.clearCookie('access_token').status(200).json('User has been signed out');
+    } catch (error) {
+        next(error);
+    }
 }
 
 module.exports = {
@@ -70,5 +88,6 @@ module.exports = {
     getSingleUser,
     showCurrentUser,
     updateUser,
-    updateUserPassword
+    deleteUser,
+    signOut,
 }
