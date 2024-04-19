@@ -24,7 +24,7 @@ import OAuth from '../components/OAuth'
 
   const handleSubmit = async(event) => {
     event.preventDefault();
-    if (!formData.email || !formData.password) {
+    if (!formData.email.trim() || !formData.password.trim()) {
       return dispatch(signInFailure('Please fill out all fields.'));
     }
     try {
