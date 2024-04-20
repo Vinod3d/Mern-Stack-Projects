@@ -23,7 +23,7 @@ const CreatePost = () => {
                     Upload Image
                 </Button>
             </div>
-            <ReactQuill theme="snow" placeholder='Write something...' className='h-72 mb-12' required/>;
+            <ReactQuill theme="snow" placeholder='Write something...' className='h-72 mb-12' required/>
             <Button type='submit' gradientDuoTone='purpleToPink'>
                 Publish
             </Button>
