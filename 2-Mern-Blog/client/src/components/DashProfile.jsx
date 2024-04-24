@@ -153,7 +153,7 @@ const DashProfile = () => {
 
             const data = await res.json();
             if(!res.ok){
-                console.log(data.message);
+                next(data.msg);
             } else{
                 dispatch(signoutSuccess());
             }
