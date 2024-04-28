@@ -3,17 +3,49 @@ const CustomError = require('../errors');
 const { StatusCodes } = require('http-status-codes');
 const bcryptjs = require('bcryptjs');
 
-const getAllUsers = async (req, res)=>{
-    res.send("get all users");
+const getUsers = async (req, res, next)=>{
+    if(!req.user.isAdmin){
+        return next(CustomError.UnauthorizedError('You are not allowed to see all users'));
+    } 
+
+    try {
+        const startIndex = parseInt(req.query.startIndex) || 0;
+        const limit = parseInt(req.query.limit) || 9;
+        const sortDirection = req.query.sort === 'asc' ? 1 : -1;
+
+        const users = await User.find()
+        .sort({createdAt: sortDirection})
+        .skip(startIndex)
+        .limit(limit);
+
+        const usersWithoutPassword = users.map((user)=>{
+            const {password, ...rest} = user._doc;
+            return rest;
+        });
+
+        const totalUsers = await User.countDocuments();
+        const now = new Date();
+        const oneMonthAgo = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            now.getDate()
+        );
+
+        const lastMonthUsers = await User.countDocuments({
+            createdAt: {$gte: oneMonthAgo}
+        });
+
+        res.status(StatusCodes.OK).json({
+            users: usersWithoutPassword,
+            totalUsers,
+            lastMonthUsers
+        })
+
+    } catch (error) {
+        next(error);
+    }
 }
 
-const getSingleUser = async (req, res)=>{
-
-}
-
-const showCurrentUser = async (req, res)=>{
-
-};
 
 const updateUser = async (req, res, next)=>{
     const { userId } = req.params;
@@ -84,9 +116,7 @@ const signOut = async(req, res, next) => {
 }
 
 module.exports = {
-    getAllUsers,
-    getSingleUser,
-    showCurrentUser,
+    getUsers,
     updateUser,
     deleteUser,
     signOut,
