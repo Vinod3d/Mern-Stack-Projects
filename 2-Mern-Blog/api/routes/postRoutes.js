@@ -4,11 +4,13 @@ const verifyToken = require('../utils/verifyUser');
 const {
     create,
     getposts,
-    deletepost
+    deletepost,
+    updatepost
 } =  require("../controllers/postController");
 
 router.post('/create', verifyToken, create)
 router.get('/getposts', getposts)
 router.delete('/deletepost/:postId/:userId', verifyToken, deletepost)
+router.put('/updatepost/:postId/:userId', verifyToken, updatepost)
 
 module.exports = router;
