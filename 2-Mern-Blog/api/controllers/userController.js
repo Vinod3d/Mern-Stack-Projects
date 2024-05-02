@@ -95,7 +95,7 @@ const updateUser = async (req, res, next)=>{
 
 
 const deleteUser = async (req, res, next) => {
-    if(req.user.id !== req.params.userId){
+    if(!req.user.isAdmin && req.user.id !== req.params.userId){
         return  next(new CustomError.ForbiddenError("You don't have permission to delete this"));
     }
 
