@@ -115,9 +115,24 @@ const signOut = async(req, res, next) => {
     }
 }
 
+const getUser = async (req, res, next)=>{
+    try {
+        const user = await User.findById(req.params.userId);
+        if(!user){
+            return next(new CustomError.NotFoundError('No user found with that ID'));
+        }
+
+        const {password, ...rest} = user._doc;
+        res.status(StatusCodes.OK).json(rest);
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     getUsers,
     updateUser,
     deleteUser,
     signOut,
+    getUser,
 }

@@ -42,7 +42,7 @@ const signin = async (req, res, next) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: '3d' }
+      { id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET, { expiresIn: '8d' }
     )
     
     const {password: pass, ...rest} = user._doc;
@@ -61,7 +61,7 @@ const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if(user){
-      const token = jwt.sign({id: user._id, isAdmin: user.isAdmin}, process.env.JWT_SECRET, {expiresIn:'3d'});
+      const token = jwt.sign({id: user._id, isAdmin: user.isAdmin}, process.env.JWT_SECRET, {expiresIn:'8d'});
       const {password, ...rest} = user._doc;
       res.status(StatusCodes.OK).cookie('access_token', token,  {httpOnly:true}).json(rest);
     } else{

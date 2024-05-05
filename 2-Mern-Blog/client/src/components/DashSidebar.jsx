@@ -24,17 +24,21 @@ const DashSidebar = () => {
             const res = await fetch('api/v1/users/signout', {
                 method : 'POST',
             })
-
+    
             const data = await res.json();
+            console.log(data)
             if(!res.ok){
                 console.log(data.message);
             } else{
+                localStorage.clear();
                 dispatch(signoutSuccess());
             }
         } catch (error) {
             
         }
     }
+
+    
     return (
         <Sidebar className='w-full md:w-56'>
             <Sidebar.Items>
