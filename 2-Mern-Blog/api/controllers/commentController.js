@@ -80,9 +80,27 @@ const editComment = async (req, res, next)=>{
     }
 }
 
+const deleteComment = async (req, res, next) => {
+    try {
+        const comment = await Comment.findById(req.params.commentId);
+        if(!comment){
+            return next(CustomError.NotFoundError('Comment not found'));
+        }
+        if(comment.userId !== req.user.id && !req.user.isAdmin){
+            return next(CustomError.AuthorizationError("You are not authorized to perform this action"));
+        }
+        await Comment.findByIdAndDelete(req.params.commentId);
+        res.status(StatusCodes.OK).json('Comment has been deleted');
+
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports =  {
     createComment,
     getPostComments,
     likeComment,
-    editComment
+    editComment,
+    deleteComment
 };

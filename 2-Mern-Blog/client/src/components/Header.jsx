@@ -1,5 +1,5 @@
 import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {AiOutlineSearch} from 'react-icons/ai'
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +13,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const {currentUser} = useSelector(state => state.user);
   const {theme} = useSelector((state) => state.theme);
+  let navigate = useNavigate()
 
   const handleSignOut = async()=>{
     try {
@@ -24,6 +25,7 @@ const Header = () => {
         console.log(data)
         if(!res.ok){
             console.log(data.message);
+            navigate('/sign-in')
         } else{
             localStorage.clear();
             dispatch(signoutSuccess());
