@@ -55,10 +55,34 @@ const likeComment = async(req, res, next) => {
     } catch (error) {
         next(error);
     }
+};
+
+
+const editComment = async (req, res, next)=>{
+    try {
+        const comment = await Comment.findById(req.params.commentId);
+        if(!comment){
+            return next(CustomError.NotFoundError('Comment not found'));
+        }
+
+        if(comment.userId !== req.user.id && !req.user.isAdmin){
+            return next(CustomError.AuthorizationError("You do not have permission to perform this action"));
+        }
+
+        const editedComment = await Comment.findByIdAndUpdate(req.params.commentId, {
+            content : req.body.content
+        },
+        {new: true});
+
+        res.status(StatusCodes.OK).json(editedComment)
+    } catch (error) {
+        next(error)
+    }
 }
 
 module.exports =  {
     createComment,
     getPostComments,
-    likeComment
+    likeComment,
+    editComment
 };
