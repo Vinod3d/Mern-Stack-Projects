@@ -17,10 +17,6 @@ const commentRouter = require( './routes/commentRoutes' );
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
-
-
-
-
 //middleware use
 app.use(express.json());
 app.use(cors())
@@ -31,21 +27,8 @@ app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/comment', commentRouter);
 
 
-
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
-
-// app.use((err, req, res, next) => {
-//   const statusCode = err.statusCode || 500;
-//   const message = err.message || 'Internal Server Error';
-//   res.status(statusCode).json({
-//     success: false,
-//     statusCode,
-//     message,
-//   });
-// });
-
-
 
 const port = process.env.PORT || 5000;
 const start = async () => {
