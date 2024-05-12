@@ -6,7 +6,8 @@ const {
     getPostComments,
     likeComment,
     editComment,
-    deleteComment
+    deleteComment,
+    getComments
  } = require('../controllers/commentController');
 
 
@@ -15,5 +16,6 @@ router.get('/getPostComments/:postId', getPostComments);
 router.put('/likeComment/:commentId', verifyToken, likeComment);
 router.put('/editComment/:commentId', verifyToken, editComment);
 router.delete('/deleteComment/:commentId', verifyToken, deleteComment);
+router.get('/getComments', verifyToken, getComments);
 
 module.exports = router;
