@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import CallToAction from '../components/CallToAction'
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import CallToAction from '../components/CallToAction';
 import PostCard from '../components/PostCard';
 
 const Home = () => {
@@ -14,44 +14,51 @@ const Home = () => {
     };
     fetchPosts();
   }, []);
+
   return (
-    <div>
-      <div className='flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto '>
-        <h1 className='text-3xl font-bold lg:text-6xl'>Welcome to my Blog</h1>
-        <p className='text-gray-500 text-xs sm:text-sm'>
-          Here you'll find a variety of articles and tutorials on topics such as
-          web development, software engineering, and programming languages.
+    <div className='bg-gray-50'>
+      {/* Hero Section */}
+      <section className='relative bg-cover bg-center h-[400px] flex flex-col justify-center items-center text-center bg-gradient-to-r from-teal-500 to-cyan-500'>
+        <h1 className='text-white text-4xl md:text-6xl font-bold'>Welcome to My Blog</h1>
+        <p className='text-white mt-4 text-sm md:text-lg max-w-xl'>
+          Dive into insightful articles on web development, software engineering, and programming languages.
         </p>
         <Link
           to='/search'
-          className='text-xs sm:text-sm text-teal-500 font-bold hover:underline'
+          className='mt-6 text-teal-500 bg-white px-6 py-2 rounded-full font-semibold hover:bg-gray-100 transition-all'
         >
-          View all posts
+          View All Posts
         </Link>
-      </div>
-      <div className='p-3 bg-amber-100 dark:bg-slate-700'>
-        <CallToAction />
-      </div>
-      <div className='max-w-6xl mx-auto p-3 flex flex-col gap-8 py-7'>
-        {posts && posts.length > 0 && (
-          <div className='flex flex-col gap-6'>
-            <h2 className='text-2xl font-semibold text-center'>Recent Posts</h2>
-            <div className='flex flex-wrap gap-4'>
-              {posts.map((post) => (
-                <PostCard key={post._id} post={post} />
-              ))}
-            </div>
-            <Link
-              to={'/search'}
-              className='text-lg text-teal-500 hover:underline text-center'
-            >
-              View all posts
-            </Link>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
+      </section>
 
-export default Home
+      {/* Call to Action */}
+      <section className='py-10 bg-amber-100 dark:bg-slate-700'>
+        <CallToAction />
+      </section>
+
+      {/* Recent Posts Section */}
+      <section className='max-w-7xl mx-auto p-5 py-10'>
+        <h2 className='text-3xl font-semibold text-center mb-10'>Recent Posts</h2>
+        {posts && posts.length > 0 ? (
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8'>
+            {posts.map((post) => (
+              <PostCard key={post._id} post={post} />
+            ))}
+          </div>
+        ) : (
+          <p className='text-center text-gray-500'>No posts available.</p>
+        )}
+        <div className='mt-10 text-center'>
+          <Link
+            to='/search'
+            className='text-teal-500 text-lg font-semibold hover:underline'
+          >
+            View all posts
+          </Link>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Home;
