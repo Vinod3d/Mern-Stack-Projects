@@ -15,7 +15,7 @@ body {
   }
   
   .post-content h1 {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 600;
     font-family: sans-serif;
     margin: 1.5rem 0;
@@ -38,4 +38,8 @@ body {
   
   .dark .post-content a {
     color: red;
+  }
+
+  .editor-content h3{
+    /* font-size: 33px; */
   }

@@ -79,13 +79,13 @@ const PostPage = () => {
         </div>
 
         <div
-          className="prose lg:prose-xl mx-auto my-6"
+          className="prose lg:prose-xl mx-auto my-6 post-content"
           dangerouslySetInnerHTML={{ __html: post && post.content }}
         ></div>
       </section>
 
       {/* Call to Action Section */}
-      <div className="w-full max-w-4xl my-10">
+      <div className="w-full max-w-6xl my-10">
         <CallToAction />
       </div>
 
