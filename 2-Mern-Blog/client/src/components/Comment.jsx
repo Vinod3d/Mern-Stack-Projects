@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from 'react'
 import moment from 'moment';
 import { FaThumbsUp } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
@@ -19,11 +20,13 @@ const Comment = ({comment, onLike, onEdit, onDelete}) => {
                 }
 
             } catch (error) {
-                
+                console.log(error)
             }
         }
         getUser();
     }, [comment])
+
+    console.log(user)
 
     const handleEdit = async()=>{
         setIsEditing(true);
@@ -62,7 +65,7 @@ const Comment = ({comment, onLike, onEdit, onDelete}) => {
         </div>
         <div className="flex-1">
             <div className="flex items-center mb-1">
-                <span className='font-bold mr-1 text-xs truncate'>{user ? `@${user.username}` : 'anonymous user'}</span>
+                <span className='font-bold mr-1 text-xs truncate'>{user ? `@${user.username || user.name}` : 'anonymous user'}</span>
                 <span className='text-gray-500 text-xs'>{moment(comment.createdAt).fromNow()}</span>
             </div>
             {isEditing ? (
@@ -121,14 +124,14 @@ const Comment = ({comment, onLike, onEdit, onDelete}) => {
                                 <button 
                                     type='button'
                                     onClick={handleEdit}
-                                    className='text-gray-400 hover:text-blue-500'
+                                    className='text-gray-400 hover:text-blue-500 px-5'
                                 >
                                     Edit
                                 </button>
                                 <button 
                                     type='button'
                                     onClick={()=> onDelete(comment._id)}
-                                    className='text-gray-400 hover:text-red-500'
+                                    className='text-gray-400 hover:text-red-500 px-5'
                                 >
                                     Delete
                                 </button>

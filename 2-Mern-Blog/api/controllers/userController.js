@@ -5,7 +5,7 @@ const bcryptjs = require('bcryptjs');
 
 const getUsers = async (req, res, next)=>{
     if(!req.user.isAdmin){
-        return next(CustomError.UnauthorizedError('You are not allowed to see all users'));
+        return next(new CustomError.UnauthorizedError('You are not allowed to see all users'));
     } 
 
     try {

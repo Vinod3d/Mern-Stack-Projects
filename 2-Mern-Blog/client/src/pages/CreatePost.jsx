@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { app } from '../firebase';
@@ -15,6 +16,22 @@ const CreatePost = () => {
     const [formData, setFormData] = useState({});
     const [publishError, setPublishError] = useState(null);
     const navigate = useNavigate();
+    const modules = {
+        toolbar: [
+          [{ header: [1, 2, 3, 4, 5, 6, false] }, { font: [] }],
+          [{ list: "ordered" }, { list: "bullet" }],
+          [{ script: "sub" }, { script: "super" }], // superscript/subscript
+          [{ indent: "-1" }, { indent: "+1" }], // indent
+          [{ direction: "rtl" }], // text direction
+          [{ size: ["small", false, "large", "huge"] }], // custom font sizes
+          [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+          [{ align: [] }],
+          ["bold", "italic", "underline", "strike"], // toggled buttons
+          ["blockquote", "code-block"],
+          ["link", "image", "video"],
+          ["clean"], // remove formatting button
+        ],
+      };
     
     const handleUploadImage = async ()=>{
         try {
@@ -143,6 +160,7 @@ const CreatePost = () => {
                 theme="snow" 
                 placeholder='Write something...' 
                 className='h-72 mb-12' required
+                modules={modules}
                 onChange={(value)=>{
                     setFormData({...formData, content: value});
                 }}

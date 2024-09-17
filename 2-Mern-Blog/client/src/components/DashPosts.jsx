@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Table } from 'flowbite-react';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
-import { Alert, Button, Modal, TextInput } from 'flowbite-react';
+import { Button, Modal } from 'flowbite-react';
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { getStorage, ref, deleteObject } from 'firebase/storage';
 
 const DashPosts = () => {
     const {currentUser} = useSelector((state)=> state.user)
@@ -15,7 +17,7 @@ const DashPosts = () => {
     useEffect(()=>{
         const fetchPosts = async ()=>{
             try {
-                const res = await fetch(`/api/v1/posts/getposts?userId=${currentUser._id}`); 
+                const res = await fetch(`/api/v1/posts/getposts`); 
                 const data = await res.json()
 
                 if(res.ok){
@@ -25,7 +27,7 @@ const DashPosts = () => {
                     }
                 }
             } catch (error) {
-                next(error.message)
+                console.log(error.message)
             }
         };
 
@@ -53,22 +55,49 @@ const DashPosts = () => {
         }
     }
 
-    const handleDeletePost = async()=>{
+    const getImagePathFromURL = (url) => {
+        const startIndex = url.indexOf('/o/') + 3; // Get the index after '/o/'
+        const endIndex = url.indexOf('?'); // Stop at the '?'
+        return url.substring(startIndex, endIndex).replace(/%2F/g, '/');
+    };
+
+    const handleDeletePost = async () => {
         setShowModal(false);
         try {
-            const res = await fetch(`/api/v1/posts/deletepost/${postIdToDelete}/${currentUser._id}`, {
+            // Find the post to delete
+            const postToDelete = userPosts.find((post) => post._id === postIdToDelete);
+            if (!postToDelete) {
+                console.error('Post not found');
+                return;
+            }
+
+            // Get the image URL and extract the image path
+            const imageUrl = postToDelete.image;
+            const imagePath = getImagePathFromURL(imageUrl); // Extract the path
+
+            // Get Firebase Storage instance
+            const storage = getStorage();
+            const imageRef = ref(storage, imagePath); // Create a reference to the image
+
+            // Delete the image from Firebase Storage
+            await deleteObject(imageRef);
+
+            // After deleting the image, delete the post from the database
+            const res = await fetch(`/api/v1/posts/deletepost/${postIdToDelete}`, {
                 method: 'DELETE',
             });
-            const data = res.json();
-            if(!res.ok){
+
+            const data = await res.json();
+            if (!res.ok) {
                 console.log(data.message);
             } else {
-                setUserPosts((prev)=> prev.filter((post)=> post._id !== postIdToDelete))
+                // Remove the post from the UI
+                setUserPosts((prev) => prev.filter((post) => post._id !== postIdToDelete));
             }
         } catch (error) {
-            console.log(error.message)
+            console.error('Error deleting post or image:', error.message);
         }
-    }
+    };
   return (
     <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-trak-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
         {currentUser.isAdmin && userPosts.length > 0 ? (

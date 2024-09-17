@@ -1,7 +1,11 @@
-import { Button, Spinner } from 'flowbite-react';
-import React, { useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
+import { Spinner } from 'flowbite-react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import CallToAction from '../components/CallToAction';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from "@/components/ui/badge"
+import { Separator } from '@/components/ui/separator';
 import CommentSection from '../components/CommentSection';
 import PostCard from '../components/PostCard';
 
@@ -10,8 +14,9 @@ const PostPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [post, setPost] = useState(null);
+  const [author, setAuthor] = useState(null)
   const [recentPosts, setRecentPosts] = useState(null);
-
+  
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -52,6 +57,27 @@ const PostPage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (!post?.userId) return; // Exit if userId is not available
+  
+    const fetchAuthor = async () => {
+      try {
+        const res = await fetch(`/api/v1/users/${post.userId}`);
+        const data = await res.json();
+
+        if (res.ok) {
+          setAuthor(data);
+        } else {
+          console.error('Failed to fetch author:', data);
+        }
+      } catch (error) {
+        console.error('Fetch error:', error.message);
+      }
+    };
+  
+    fetchAuthor();
+  }, [post]);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -61,44 +87,64 @@ const PostPage = () => {
   }
 
   return (
-    <main className="flex flex-col items-center max-w-7xl mx-auto min-h-screen p-6">
-      {/* Hero Section */}
-      <section className="w-full bg-cover bg-center h-[400px] flex items-center justify-center text-center relative"
-        style={{ backgroundImage: `url(${post && post.image})` }}>
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-        <h1 className="relative text-white text-4xl lg:text-5xl font-bold z-10">
-          {post && post.title}
+    <main className="flex flex-col  max-w-6xl mx-auto min-h-screen px-4 py-12 post-content">
+      <header className="mb-8">
+        <h1 className="text-4xl font-bold tracking-tight lg:text-5xl mb-4">
+          {post && post?.title}
         </h1>
-      </section>
+        <p className="text-muted-foreground">
+          Published on {post && new Date(post?.createdAt).toLocaleDateString()}
+        </p>
+      </header>
 
-      {/* Post Content */}
-      <section className="w-full max-w-2xl mx-auto my-8">
-        <div className="flex justify-between items-center text-sm text-gray-600 mb-4">
-          <span>{post && new Date(post.createdAt).toLocaleDateString()}</span>
-          <span className="italic">{post && (post.content.length / 1000).toFixed(0)} mins read</span>
+      {/* Author Section */}
+      <div className="flex items-center mb-8">
+        <Avatar className="h-10 w-10 mr-4">
+          <img src={author && author.profilePicture} alt="Author" />
+          <AvatarFallback>VC</AvatarFallback>
+        </Avatar>
+        <div>
+          <p className="font-semibold">{author?.name}</p>
+          <p className="text-sm text-muted-foreground">FullStack Developer</p>
         </div>
-
-        <div
-          className="prose lg:prose-xl mx-auto my-6 post-content"
-          dangerouslySetInnerHTML={{ __html: post && post.content }}
-        ></div>
-      </section>
-
-      {/* Call to Action Section */}
-      <div className="w-full max-w-6xl my-10">
-        <CallToAction />
       </div>
 
+      {/* Cover Image */}
+      <img
+        src={post && post?.image}
+        alt="Blog cover image"
+        width="100%"
+        height={400}
+        className="rounded-lg mb-8 object-cover"
+      />
+
+      {/* Post Content */}
+      <section className="prose prose-lg dark:prose-invert max-w-none mb-8">
+        <div dangerouslySetInnerHTML={{ __html: post && post?.content }}></div>
+      </section>
+
+      {/* Tags Section */}
+      <div className="mb-8">
+        <h3 className="text-lg font-semibold mb-4">Tags</h3>
+        <div className="flex flex-wrap gap-2">
+            <Badge variant="secondary">{post.category}</Badge>
+        </div>
+      </div>
+
+      <Separator className="my-8" />
+
+
+
       {/* Comment Section */}
-      <CommentSection postId={post._id} />
+      <CommentSection postId={post?._id} />
 
       {/* Recent Posts */}
       <section className="w-full max-w-6xl mx-auto my-10">
         <h2 className="text-2xl font-semibold text-center mb-6">Recent Articles</h2>
         <div className="flex flex-wrap justify-center gap-8">
           {recentPosts &&
-            recentPosts.map((post) => (
-              <PostCard key={post._id} post={post} />
+            recentPosts.map(post => (
+              <PostCard key={post?._id} post={post} />
             ))}
         </div>
       </section>

@@ -15,8 +15,9 @@ const DashComments = () => {
 
     useEffect(()=>{
         const fetchComments = async ()=>{
+            const sort = 'desc'
             try {
-                const res = await fetch(`/api/v1/comment/getComments`); 
+                const res = await fetch(`/api/v1/comment/getComments?sort=${sort}`); 
                 const data = await res.json()
 
                 if(res.ok){
@@ -26,7 +27,7 @@ const DashComments = () => {
                     }
                 }
             } catch (error) {
-                next(error.message)
+                console.log(error.message)
             }
         };
 
@@ -39,8 +40,10 @@ const DashComments = () => {
         const startIndex = comments.length;
         
         try {
-            const res = await fetch(`/api/v1/comment/getComments?&startIndex=${startIndex}`); 
+            const res = await fetch(`/api/v1/comment/getComments?startIndex=${startIndex}`);
+
             const data = await res.json()
+            console.log(data)
 
             if(res.ok){
                 setComments((prev) => [...prev, ...data.comments]);
@@ -81,7 +84,6 @@ const DashComments = () => {
                         <Table.HeadCell>Comment content</Table.HeadCell>
                         <Table.HeadCell>Number of likes</Table.HeadCell>
                         <Table.HeadCell>PostId</Table.HeadCell>
-                        <Table.HeadCell>Admin</Table.HeadCell>
                         <Table.HeadCell>Delete</Table.HeadCell>
                     </Table.Head>
                     <Table.Body className='divide-y'>

@@ -22,7 +22,11 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 
 //middleware use
 app.use(express.json());
-app.use(cors())
+app.use(cors({
+  origin: ['https://firebasestorage.googleapis.com/v0/b/', 'https://lh3.googleusercontent.com/a/'],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  credentials: true
+}))
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
