@@ -48,7 +48,8 @@ const signin = async (req, res, next) => {
     const {password: pass, ...rest} = user._doc;
 
     res.status(StatusCodes.OK).cookie('access_token', token, {
-      httpOnly: true
+      httpOnly: true,
+      expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
     }).json(rest);
 
   } catch (error) {
@@ -74,9 +75,9 @@ const google = async (req, res, next) => {
         profilePicture: photo,
       });
       await newUser.save();
-      const token = jwt.sign({id: newUser._id, isAdmin : newUser.isAdmin}, process.env.JWT_SECRET, {expiresIn: "3d"});
+      const token = jwt.sign({id: newUser._id, isAdmin : newUser.isAdmin}, process.env.JWT_SECRET, {expiresIn: "8d"});
       const {password, ...rest} = newUser._doc;
-      res.status(StatusCodes.OK).cookie('access_token', token,  {httpOnly:true}).json(rest);
+      res.status(StatusCodes.OK).cookie('access_token', token,  {httpOnly:true, expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),}).json(rest);
     }
   } catch (error) {
     next(error);

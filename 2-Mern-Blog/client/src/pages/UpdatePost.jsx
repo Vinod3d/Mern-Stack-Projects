@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { Alert, Button, FileInput, Select, TextInput } from "flowbite-react";
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { app } from "../firebase";
@@ -8,6 +9,7 @@ import {
   ref,
   getDownloadURL,
   uploadBytesResumable,
+  deleteObject,
 } from "firebase/storage";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -25,86 +27,92 @@ const UpdatePost = () => {
     image: "",
   });
 
+  const [previousImage, setPreviousImage] = useState(""); // Store previous image URL
   const [publishError, setPublishError] = useState(null);
   const navigate = useNavigate();
   const { postId } = useParams();
   const { currentUser } = useSelector((state) => state.user);
+
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, 4, 5, 6, false] }, { font: [] }],
       [{ list: "ordered" }, { list: "bullet" }],
-      [{ script: "sub" }, { script: "super" }], // superscript/subscript
-      [{ indent: "-1" }, { indent: "+1" }], // indent
-      [{ direction: "rtl" }], // text direction
-      [{ size: ["small", false, "large", "huge"] }], // custom font sizes
-      [{ color: [] }, { background: [] }], // dropdown with defaults from theme
+      [{ script: "sub" }, { script: "super" }],
+      [{ indent: "-1" }, { indent: "+1" }],
+      [{ direction: "rtl" }],
+      [{ size: ["small", false, "large", "huge"] }],
+      [{ color: [] }, { background: [] }],
       [{ align: [] }],
-      ["bold", "italic", "underline", "strike"], // toggled buttons
+      ["bold", "italic", "underline", "strike"],
       ["blockquote", "code-block"],
       ["link", "image", "video"],
-      ["clean"], // remove formatting button
+      ["clean"],
     ],
   };
 
   useEffect(() => {
-    try {
-      const fetchPost = async () => {
+    const fetchPost = async () => {
+      try {
         const res = await fetch(`/api/v1/posts/getposts?postId=${postId}`);
         const data = await res.json();
-
-        if (!res.ok) {
-          console.log(data.message);
+        if (res.ok) {
+          setFormData(data.posts[0]);
+          setPreviousImage(data.posts[0].image); // Store the previous image URL
+        } else {
           setPublishError(data.message);
         }
-
-        if (res.ok) {
-          setPublishError(null);
-          setFormData(data.posts[0]);
-        }
-      };
-
-      fetchPost();
-    } catch (error) {
-      console.log(error);
-    }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchPost();
   }, [postId]);
 
-  const handleUploadImage = async () => {
-    try {
-      if (!file) {
-        return;
-      }
-      setImageUploadError(null);
+  // Function to delete the previous image from Firebase Storage
+  const deletePreviousImage = async () => {
+    if (previousImage) {
       const storage = getStorage(app);
-      const fileName = new Date().getTime() + "-" + file.name;
-      const storageRef = ref(storage, fileName);
-      const uploadTask = uploadBytesResumable(storageRef, file);
+      const imageRef = ref(storage, previousImage);
 
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setImageUploadProgress(progress.toFixed(0));
-        },
-
-        (error) => {
-          setImageUploadError("Image upload failed");
-          setImageUploadProgress(null);
-        },
-
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setImageUploadError(null);
-            setImageUploadProgress(null);
-            setFormData({ ...formData, image: downloadURL });
-          });
-        }
-      );
-    } catch (error) {
-      setImageUploadError("Image upload failed");
-      setImageUploadProgress(null);
+      try {
+        await deleteObject(imageRef); // Delete the previous image
+      } catch (error) {
+        console.log("Failed to delete previous image", error);
+      }
     }
+  };
+
+  const handleUploadImage = () => {
+    if (!file) return;
+
+    setImageUploadError(null);
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + "-" + file.name;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setImageUploadProgress(progress.toFixed(0));
+      },
+      (error) => {
+        setImageUploadError("Image upload failed");
+        setImageUploadProgress(null);
+      },
+      async () => {
+        // Delete the previous image
+        await deletePreviousImage();
+
+        // Get new image URL and update formData
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setFormData({ ...formData, image: downloadURL });
+          setImageUploadProgress(null);
+        });
+      }
+    );
   };
 
   const handleSubmit = async (e) => {
@@ -121,16 +129,12 @@ const UpdatePost = () => {
           body: JSON.stringify(formData),
         }
       );
-
       const data = await res.json();
-      if (!res.ok) {
-        setPublishError(data.message);
-        return;
-      }
 
       if (res.ok) {
-        setPublishError(null);
         navigate(`/posts/${data.slug}`);
+      } else {
+        setPublishError(data.message);
       }
     } catch (error) {
       setPublishError("Something went wrong");
@@ -160,9 +164,12 @@ const UpdatePost = () => {
             }
           >
             <option value="uncategorized">Select a category</option>
-            <option value="javascript">JavaScript</option>
-            <option value="reactjs">React.js</option>
-            <option value="nextjs">Next.js</option>
+            <option value="Web Development">Web Development</option>
+            <option value="Health">Health</option>
+            <option value="technology">Technology</option>
+            <option value="space">space</option>
+            <option value="food & recipes">food & recipes</option>
+            <option value="lifestyle">lifestyle</option>
           </Select>
         </div>
         <div className="flex gap-4 item-center justify-between border-4 border-teal-500 border-dotted p-3">

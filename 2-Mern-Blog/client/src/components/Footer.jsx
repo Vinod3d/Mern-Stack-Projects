@@ -1,6 +1,7 @@
 import { Footer } from 'flowbite-react';
 import { Link } from 'react-router-dom';
 import { BsFacebook, BsInstagram, BsTwitter, BsGithub, BsDribbble } from 'react-icons/bs';
+import logo from '../assets/logo.png'
 
 const FooterCom = () => {
   return (
@@ -9,8 +10,7 @@ const FooterCom = () => {
             <div className="grid w-full justify-between sm:flex md:grid-cols-1">
                 <div className="">
                     <Link to="/" className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
-                        <span className='px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white'>Chandra </span>
-                        Blog
+                    <img src={logo} width="200px" alt="" />
                     </Link>
                 </div>
                 <div className="grid grid-cols-2 gap-8 mt-4 sm:grid-cols-3 sm:gap-6">
@@ -29,7 +29,7 @@ const FooterCom = () => {
                                 target='_blank'
                                 rel='noopener noreferrer'
                             >
-                                Chandra's Blog
+                                MY Blog
                             </Footer.Link>
                         </Footer.LinkGroup>
                     </div>

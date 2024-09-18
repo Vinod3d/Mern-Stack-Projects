@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleTheme } from '../redux/theme/themeSlice';
 import { signoutSuccess } from '../redux/user/userSlice';
 import { useEffect, useState } from 'react';
+import logo from '../assets/logo.png'
 
 
 
@@ -42,7 +43,7 @@ const Header = () => {
             dispatch(signoutSuccess());
         }
     } catch (error) {
-        
+        console.log(error)
     }
 }
 
@@ -58,8 +59,7 @@ const handleSubmit = (e) => {
   return (
     <Navbar className='border-b-2'>
       <Link to="/" className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
-        <span className='px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white'>Chandra </span>
-        Blog
+        <img src={logo} width="200px" alt="" />
       </Link>
       <form onSubmit={handleSubmit}>
         <TextInput
@@ -115,8 +115,8 @@ const handleSubmit = (e) => {
           <Navbar.Link active={path === "/about"} as={'div'}>
             <Link  to='/about'>About</Link>
           </Navbar.Link>
-          <Navbar.Link active={path === "/projects"} as={'div'}>
-            <Link  to='/projects'>Projects</Link>
+          <Navbar.Link active={path === "/posts"} as={'div'}>
+            <Link  to='/posts'>Posts</Link>
           </Navbar.Link>
       </Navbar.Collapse>
     </Navbar>
